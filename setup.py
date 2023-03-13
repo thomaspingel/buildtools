@@ -26,7 +26,5 @@ setup(
                  'Operating System :: OS Independent',
                  'License :: OSI Approved :: MIT License'],
     keywords='GIS lidar',
-	install_requires=['scipy','pandas','rasterio','numpy','geopandas']},
-
-	
-	)
+	install_requires=['scipy','pandas','rasterio','numpy'],
+    )
