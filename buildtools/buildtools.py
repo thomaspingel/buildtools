@@ -10,6 +10,7 @@ import numpy as np
 from shapely import geometry
 import geopandas
 from datetime import datetime
+import os
 
 #%%
 
@@ -95,4 +96,9 @@ def make_bcrs(lat,lon,azimuth,name='local',method='aeqd'):
     
 #%%
 
-# TODO: Merge more than one log together
+def percept2datetime(fn):
+    basename = os.path.basename(fn)
+    datetime_format = '%Y%m%d-%H%M%S'
+    milliseconds = int(basename[12:-5])/1000
+    dt = datetime.fromtimestamp(milliseconds)
+    return dt, datetime.strftime(dt,datetime_format)
