@@ -9,7 +9,8 @@ import pandas as pd
 import numpy as np
 from shapely import geometry
 import geopandas
-import datetime
+from datetime import datetime
+import os
 
 #%%
 
@@ -45,8 +46,8 @@ def points_to_lines(df):
            
            last_time = data.iloc[-1]['timestamp']
            first_time = data.iloc[0]['timestamp']
-           b = datetime.datetime.strptime(last_time[:-4],"%Y-%m-%dT%H:%M:%S.%f")
-           a = datetime.datetime.strptime(first_time[:-4],"%Y-%m-%dT%H:%M:%S.%f")
+           b = datetime.strptime(last_time[:-4],"%Y-%m-%dT%H:%M:%S.%f")
+           a = datetime.strptime(first_time[:-4],"%Y-%m-%dT%H:%M:%S.%f")
            c = (b-a).total_seconds()
            seconds.append(c)    
        except:
@@ -95,4 +96,9 @@ def make_bcrs(lat,lon,azimuth,name='local',method='aeqd'):
     
 #%%
 
-# TODO: Merge more than one log together
+def percept2datetime(fn):
+    basename = os.path.basename(fn)
+    datetime_format = '%Y%m%d-%H%M%S'
+    milliseconds = int(basename[12:-5])/1000
+    dt = datetime.fromtimestamp(milliseconds)
+    return dt, datetime.strftime(dt,datetime_format)
