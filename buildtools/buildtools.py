@@ -525,12 +525,12 @@ def build_score(xy,ab,t):
     if len(xy) <= len(ab):  # At least as many object detected as exist
         row,col,costs = hungarian_algorithm(xy,ab)
         ab_paired = ab[col]
-        bdr_result = bt.bdr(xy,ab_paired)
+        bdr_result = bdr(xy,ab_paired)
         d = np.linalg.norm(xy - ab_paired, axis=1)         # Distance
     else:                   # Fewer objects detected than exist
         row,col,costs = hungarian_algorithm(ab,xy)
         xy_paired = xy[col]
-        bdr_result = bt.bdr(xy_paired,ab)
+        bdr_result = bdr(xy_paired,ab)
         d = np.linalg.norm(xy_paired - ab, axis=1) 
         
     results['bdr'] = bdr_result
