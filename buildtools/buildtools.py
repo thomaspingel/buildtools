@@ -486,9 +486,14 @@ def score(A,B,k=100000,mask=None):
 
 #%%
 
-def plot_pairs(a,b):
+def plot_pairs(a,b,hungarian_indexes=None):
     plt.plot(*a.T,'ko')
     plt.plot(*b.T,'rx')
+    if hungarian_indexes is not None:
+        if len(a)<=len(b):
+            b = b[hungarian_indexes]
+        else:
+            a = a[hungarian_indexes]
     for point_a, point_b in zip(a, b):
         plt.plot([point_a[0], point_b[0]], [point_a[1], point_b[1]], color='black')
         
@@ -535,7 +540,7 @@ def build_score(xy,ab,t):
         
     results['bdr'] = bdr_result
     results['distance'] = d
-    results['col'] = col            # This is the Hungarian Distance lookup
+    results['hungarian_indexes'] = col            # This is the Hungarian Distance lookup
 
     TP = np.sum(d<t)
     FN = len(xy) - TP
