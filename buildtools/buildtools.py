@@ -23,6 +23,8 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from scipy import stats
 
+import rasterio
+
 #%%
 
 def points_to_lines(df):
@@ -560,4 +562,19 @@ def build_score(xy,ab,t):
     results['recall']=recall;results['F1']=F1;
     
     return results
+    
+
+#%%
+# See: N:\Projects\BUILD\subprojects\24 - Pixels to Coordinates
+
+def pix2coords(cols,rows):
+    gt = rasterio.transform.from_origin(-12., 25., .05, .05)
+    map_x,map_y = gt * (cols,rows)
+    # Alternatively: map_x, map_y = rasterio.transform.xy(gt,rows,cols,offset='ul')    
+    return map_x, map_y
+
+def coords2pix(x,y):
+    gt = rasterio.transform.from_origin(-12., 25., .05, .05)
+    cols, rows = ~gt * (x,y)
+    return cols, rows
     

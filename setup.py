@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='buildtools',
-    version='0.12',
+    version='0.13',
     packages=['buildtools',],
     license='MIT',
     long_description=open('README.md').read(),
