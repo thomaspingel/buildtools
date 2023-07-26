@@ -578,8 +578,3 @@ def coords2pix(x,y):
 def hello(s):
     return "hi " + s
     
-
-#%%
-# See: N:\Projects\BUILD\subprojects\24 - Pixels to Coordinates
-
-
