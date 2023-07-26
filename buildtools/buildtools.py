@@ -577,4 +577,7 @@ def coords2pix(x,y):
     gt = rasterio.transform.from_origin(-12., 25., .05, .05)
     cols, rows = ~gt * (x,y)
     return cols, rows
+
+def hello(s):
+    return "hi " + s
     
