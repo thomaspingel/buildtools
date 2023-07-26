@@ -23,6 +23,8 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from scipy import stats
 
+import rasterio
+
 #%%
 
 def points_to_lines(df):
@@ -486,9 +488,14 @@ def score(A,B,k=100000,mask=None):
 
 #%%
 
-def plot_pairs(a,b):
+def plot_pairs(a,b,hungarian_indexes=None):
     plt.plot(*a.T,'ko')
     plt.plot(*b.T,'rx')
+    if hungarian_indexes is not None:
+        if len(a)<=len(b):
+            b = b[hungarian_indexes]
+        else:
+            a = a[hungarian_indexes]
     for point_a, point_b in zip(a, b):
         plt.plot([point_a[0], point_b[0]], [point_a[1], point_b[1]], color='black')
         
@@ -510,6 +517,11 @@ def battersby_normalize(a,b):
 def build_score(xy,ab,t):
     
     results = {}
+    results['threshold'] = t
+    results['n_xy'] = len(xy)
+    results['b_ab'] = len(ab)
+    results['xy'] = xy
+    results['ab'] = ab
     
     # Chamfer
     chamfer_xy_to_ab = chamfer_distance(xy,ab,direction='x_to_y')
@@ -520,7 +532,9 @@ def build_score(xy,ab,t):
         chamfer_ratio = -(chamfer_ab_to_xy / chamfer_xy_to_ab - 1)
     results['chamfer_xy_to_ab'] = chamfer_xy_to_ab
     results['chamfer_ab_to_xy'] = chamfer_ab_to_xy
-    results['chamfer_ratio']    = chamfer_ratio    
+    results['chamfer_ratio'] =  chamfer_ratio_xy/chamfer_ratio_ab
+    results['chamfer_ratio_battersby']    = chamfer_ratio    
+    results['chamfer_ratio_log']  = np.log(chamfer_ratio_xy/chamfer_ratio_ab)    
 
     if len(xy) <= len(ab):  # At least as many object detected as exist
         row,col,costs = hungarian_algorithm(xy,ab)
@@ -535,7 +549,7 @@ def build_score(xy,ab,t):
         
     results['bdr'] = bdr_result
     results['distance'] = d
-    results['col'] = col            # This is the Hungarian Distance lookup
+    results['hungarian_indexes'] = col            # This is the Hungarian Distance lookup
 
     TP = np.sum(d<t)
     FN = len(xy) - TP
@@ -548,4 +562,19 @@ def build_score(xy,ab,t):
     results['recall']=recall;results['F1']=F1;
     
     return results
+    
+
+#%%
+# See: N:\Projects\BUILD\subprojects\24 - Pixels to Coordinates
+
+def pix2coords(cols,rows):
+    gt = rasterio.transform.from_origin(-12., 25., .05, .05)
+    map_x,map_y = gt * (cols,rows)
+    # Alternatively: map_x, map_y = rasterio.transform.xy(gt,rows,cols,offset='ul')    
+    return map_x, map_y
+
+def coords2pix(x,y):
+    gt = rasterio.transform.from_origin(-12., 25., .05, .05)
+    cols, rows = ~gt * (x,y)
+    return cols, rows
     

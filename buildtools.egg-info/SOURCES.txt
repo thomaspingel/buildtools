@@ -3,7 +3,6 @@ README.md
 setup.py
 buildtools/__init__.py
 buildtools/buildtools.py
-buildtools/test_accuracy.py
 buildtools.egg-info/PKG-INFO
 buildtools.egg-info/SOURCES.txt
 buildtools.egg-info/dependency_links.txt
