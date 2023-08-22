@@ -532,9 +532,9 @@ def build_score(xy,ab,t):
         chamfer_ratio = -(chamfer_ab_to_xy / chamfer_xy_to_ab - 1)
     results['chamfer_xy_to_ab'] = chamfer_xy_to_ab
     results['chamfer_ab_to_xy'] = chamfer_ab_to_xy
-    results['chamfer_ratio'] =  chamfer_ratio_xy/chamfer_ratio_ab
+    results['chamfer_ratio'] =  chamfer_xy_to_ab/chamfer_ab_to_xy
     results['chamfer_ratio_battersby']    = chamfer_ratio    
-    results['chamfer_ratio_log']  = np.log(chamfer_ratio_xy/chamfer_ratio_ab)    
+    results['chamfer_ratio_log']  = np.log(chamfer_xy_to_ab/chamfer_ab_to_xy)    
 
     if len(xy) <= len(ab):  # At least as many object detected as exist
         row,col,costs = hungarian_algorithm(xy,ab)
