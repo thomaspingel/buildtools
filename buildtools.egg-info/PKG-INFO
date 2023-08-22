@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: buildtools
-Version: 0.13
+Version: 0.14
 Home-page: https://github.com/thomaspingel/buildtools
 Author: Thomas Pingel
 Author-email: thomas.pingel@gmail.com
@@ -25,5 +25,5 @@ License-File: LICENSE
 
 Install with:
 ~~~
-pip install https://github.com/thomaspingel/buildtools/archive/refs/heads/main.zip
+pip install https://github.com/thomaspingel/buildtools/archive/refs/heads/main.zip --no-cache-dir 
 ~~~
