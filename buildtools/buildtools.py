@@ -72,8 +72,8 @@ def points_to_lines(df):
 
 def points_to_multipoints(df):
     df = df.loc[:,['uuid','timestamp']]
-    df['x'] = dfo['pose.position.x']
-    df['y'] = dfo['pose.position.y']   
+    df['x'] = df['pose.position.x']
+    df['y'] = df['pose.position.y']   
     
     df = df[~np.isnan(df.x)]
     df['timestamp'] = pd.to_datetime(df.timestamp).dt.round('s')
