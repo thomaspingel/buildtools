@@ -70,6 +70,37 @@ def points_to_lines(df):
 
     return gdf
 
+def points_to_multipoints(df):
+    df = df.loc[:,['uuid','timestamp']]
+    df['x'] = dfo['pose.position.x']
+    df['y'] = dfo['pose.position.y']   
+    
+    df = df[~np.isnan(df.x)]
+    df['timestamp'] = pd.to_datetime(df.timestamp).dt.round('s')
+    df.timestamp = df.timestamp + timedelta(hours=-4)
+
+    grp = df.groupby(['uuid','timestamp'])
+    df2 = grp.mean()
+    df2 = df2.reset_index()
+    df2.sort_values(['timestamp','uuid'],inplace=True)
+    grp = df2.groupby('timestamp')
+    
+    names = []
+    geometries = []
+    datetime_format = '%Y%m%d%H%M%S'
+
+
+    for item in grp:
+       name, data = item
+       coords = data.loc[:,['x','y']]
+       g = geometry.MultiPoint([geometry.Point(x, y) for x, y in zip(coords.x, coords.y)])
+       
+       names.append(datetime.strftime(name,datetime_format))
+       geometries.append(g)
+       
+    gdf = geopandas.GeoDataFrame(data={'name':names},geometry=geometries)
+    
+    return gdf
 
 #%%
 
