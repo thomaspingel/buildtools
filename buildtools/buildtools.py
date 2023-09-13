@@ -22,6 +22,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from scipy import stats
+from datetime import timedelta
 
 import rasterio
 
@@ -71,10 +72,10 @@ def points_to_lines(df):
     return gdf
 
 def points_to_multipoints(df):
-    x,y = df['pose.position.x'], df['pose.position.y']
+    x,y = df['pose.position.x'], df['pose.position.y'] 
     df = df.loc[:,['uuid','timestamp']]
     df['x'] = x
-    df['y'] = y 
+    df['y'] = y  
     
     df = df[~np.isnan(df.x)]
     df['timestamp'] = pd.to_datetime(df.timestamp).dt.round('s')
@@ -102,6 +103,7 @@ def points_to_multipoints(df):
     gdf = geopandas.GeoDataFrame(data={'name':names},geometry=geometries)
     
     return gdf
+
 
 #%%
 
