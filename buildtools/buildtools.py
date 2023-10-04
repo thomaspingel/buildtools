@@ -26,6 +26,8 @@ from datetime import timedelta
 
 import rasterio
 
+
+
 #%%
 
 def points_to_lines(df):
@@ -71,8 +73,9 @@ def points_to_lines(df):
 
     return gdf
 
+#%%
 # TODO test this!  velocity has been added. 
-def points_to_multipoints(dfo):
+def points_to_multipoints(dfo,offset=0,timezone=-4):
     x,y = dfo['pose.position.x'], dfo['pose.position.y'] 
     df = dfo.loc[:,['uuid','timestamp']]
     df['x'] = x
@@ -80,8 +83,9 @@ def points_to_multipoints(dfo):
     df['linearVelocity'] = (dfo['linearVelocity.x']**2 + dfo['linearVelocity.y']**2)**.5
     
     df = df[~np.isnan(df.x)]
-    df['timestamp'] = pd.to_datetime(df.timestamp).dt.round('s')
-    df.timestamp = df.timestamp + timedelta(hours=-4)
+    df['timestamp'] = pd.to_datetime(df.timestamp) + timedelta(seconds=offset)
+    df['timestamp'] = df['timestamp'].dt.round('s')
+    df.timestamp = df.timestamp + timedelta(hours=timezone)
 
     # 
     grp = df.groupby(['uuid','timestamp'])
