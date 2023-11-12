@@ -162,7 +162,7 @@ def percept2datetime(fn):
 
 #%%
 
-#%% Bidimensinoal Regression
+#%% Bidimensional Regression
 
 # Bidimensional Regression: A Python Implementation by Thomas J. Pingel
 #
@@ -546,6 +546,7 @@ def plot_pairs(a,b,hungarian_indexes=None):
 
 # See Battersby. 2009. The Effect of Global-Scale Map-Projection Knowledge on Perceived Land Area. doi.org/10.3138/carto.44.1.33
 # Page 38, equations 1 and 2
+# Shashank asks: Is this functionally much different than just taking the log?
 
 def battersby_normalize(a,b):
     if a>b:

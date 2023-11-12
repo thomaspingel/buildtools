@@ -26,6 +26,8 @@ from datetime import timedelta
 
 import rasterio
 
+
+
 #%%
 
 def points_to_lines(df):
@@ -71,16 +73,21 @@ def points_to_lines(df):
 
     return gdf
 
-def points_to_multipoints(df):
-    x,y = df['pose.position.x'], df['pose.position.y'] 
-    df = df.loc[:,['uuid','timestamp']]
+#%%
+# TODO test this!  velocity has been added. 
+def points_to_multipoints(dfo,offset=0,timezone=-4):
+    x,y = dfo['pose.position.x'], dfo['pose.position.y'] 
+    df = dfo.loc[:,['uuid','timestamp']]
     df['x'] = x
-    df['y'] = y  
+    df['y'] = y
+    df['linearVelocity'] = (dfo['linearVelocity.x']**2 + dfo['linearVelocity.y']**2)**.5
     
     df = df[~np.isnan(df.x)]
-    df['timestamp'] = pd.to_datetime(df.timestamp).dt.round('s')
-    df.timestamp = df.timestamp + timedelta(hours=-4)
+    df['timestamp'] = pd.to_datetime(df.timestamp) + timedelta(seconds=offset)
+    df['timestamp'] = df['timestamp'].dt.round('s')
+    df.timestamp = df.timestamp + timedelta(hours=timezone)
 
+    # 
     grp = df.groupby(['uuid','timestamp'])
     df2 = grp.mean()
     df2 = df2.reset_index()
@@ -89,6 +96,7 @@ def points_to_multipoints(df):
     
     names = []
     geometries = []
+    velocities = []
     datetime_format = '%Y%m%d%H%M%S'
 
 
@@ -99,8 +107,9 @@ def points_to_multipoints(df):
        
        names.append(datetime.strftime(name,datetime_format))
        geometries.append(g)
+       velocities.append(data.linearVelocity)
        
-    gdf = geopandas.GeoDataFrame(data={'name':names},geometry=geometries)
+    gdf = geopandas.GeoDataFrame(data={'uuid':names,'linearVelocity':velocities},geometry=geometries)
     
     return gdf
 
@@ -153,7 +162,7 @@ def percept2datetime(fn):
 
 #%%
 
-#%% Bidimensinoal Regression
+#%% Bidimensional Regression
 
 # Bidimensional Regression: A Python Implementation by Thomas J. Pingel
 #
@@ -537,6 +546,7 @@ def plot_pairs(a,b,hungarian_indexes=None):
 
 # See Battersby. 2009. The Effect of Global-Scale Map-Projection Knowledge on Perceived Land Area. doi.org/10.3138/carto.44.1.33
 # Page 38, equations 1 and 2
+# Shashank asks: Is this functionally much different than just taking the log?
 
 def battersby_normalize(a,b):
     if a>b:

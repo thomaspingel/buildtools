@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Nov 11 17:12:10 2023
+Created on Sun Nov 12 11:08:51 2023
 
 @author: Thomas Pingel
 """
@@ -15,7 +15,13 @@ import os
 
 #%%
 
-dir(bt)
+print('Using buildtools installed at:')
+print(bt.__file__)
+
+#%%
+
+print('Installed functions:')
+print(dir(bt))
 
 #%%
 
